@@ -8,8 +8,8 @@ function use(dbName){
 	fs.writeFileSync("db_config.json",str);
 }
 
-function main(argv){
-	use(argv[0]);
+function parse(arr){
+	use(arr[0]);
 }
 
-main(process.argv.slice(2));
+exports.parse = parse;

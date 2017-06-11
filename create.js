@@ -1,22 +1,27 @@
 var fs = require("fs");
+var create_obj = {
+	flags:"",
+	name:"",
+	struct:[]
+}
 
-function create(arr){
-	if(arr[0] === "database" || arr[0] === "db"){
-		fs.mkdir(arr[1],function(err){
+function create(){
+	if(create_obj.flags === "database" || create_obj.flags === "db"){
+		fs.mkdir(create_obj.name,function(err){
 			if(err)
 				return console.error(err);
 			console.log("数据库创建成功");
-			setDbname(arr[1]);
+			setDbname(create_obj.name);
 		})
-	}else if(arr[0] === "table"){
+	}else if(create_obj.flags === "table"){
 		var file = fs.readFileSync("db_config.json","utf-8");
 		var	db = JSON.parse(file).db;
 
-		fs.open(db+"/"+arr[1],"wx",function(err,fd){
+		fs.open(db+"/"+create_obj.name,"wx",function(err,fd){
 			if(err)
 				return console.error(err);
 			console.log("表创建成功");
-			setTable(arr[1],arr[2]);
+			setTable(create_obj.name,create_obj.struct);
 			fs.close(fd,function(err){
 				if(err)
 					return console.error(err);
@@ -38,21 +43,23 @@ function setDbname(dbname){
 	});
 }
 
-function setTable(table,name){
-	var str = name.slice(1,name.length-1);
-	var strarr = str.split(",");
+function setTable(table,struct){
 	fs.readFile("table_config.json","utf-8",function(err,data){
 		if(err)
 			return console.error(err);
 		var table_config = JSON.parse(data);
-		table_config[table] = strarr;
+		table_config[table] = struct;
 		var jsonstr = JSON.stringify(table_config);
 		fs.writeFileSync("table_config.json",jsonstr);
 	});
 }
 
-function main(argv){
-	create(argv);
+function parse(arr){
+	create_obj.flags = arr[0];
+	create_obj.name = arr[1];
+	if(create_obj.flags === "table")
+		create_obj.struct = arr[2].slice(1,arr[2].length-1).split(",");
+	create();
 }
 
-main(process.argv.slice(2));
+exports.parse = parse;

@@ -1,7 +1,7 @@
 使用 node.js 设计数据库
 
 一、文件列表
-1. 	cmd_parse.js 			数据库命令解析
+1. 	parse.js 				数据库命令解析
 2. 	db_config.json			数据库配置文件
 3. 	table_config.json		表配置文件
 4. 	create.js				创建数据库或表
@@ -36,9 +36,13 @@
 	drop database db_name	   || 	   drop db db_name
 	drop table table_name
 4. 	selete.js				查询记录
+	select fields from table_name
 5. 	insert.js				插入记录
+	insert table_name value value_list
 6. 	delete.js				删除记录
+	delete table_name
 7. 	update.js				更新记录
+	update table_name set key=value
 
 	
 
